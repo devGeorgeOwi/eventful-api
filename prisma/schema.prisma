@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  role          Role     @default(USER)  // USER or CREATOR
+  createdAt     DateTime @default(now())
+
+  createdEvents Event[]  @relation("EventCreator")
+  tickets       Ticket[]
+}
+
+enum Role {
+  USER
+  CREATOR
+}
+
+model Event {
+  id                String    @id @default(uuid())
+  title             String
+  description       String?
+  date              DateTime
+  location          String?
+  price             Float     // in smallest currency unit (kobo) for Paystack? We'll use Naira kobo
+  capacity          Int       // max tickets
+  creatorId         String
+  creator           User      @relation("EventCreator", fields: [creatorId], references: [id])
+  createdAt         DateTime  @default(now())
+  
+  tickets           Ticket[]
+  reminders         Reminder[]
+  analyticsSnapshot EventAnalytics? // store precomputed numbers for speed
+}
+
+model Ticket {
+  id           String   @id @default(uuid())
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id])
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  qrCodeText   String   @unique  // unique string embedded in QR
+  isUsed       Boolean  @default(false) // scanned at entrance?
+  purchasedAt  DateTime @default(now())
+  paymentRef   String   @unique  // Paystack transaction reference
+}
+
+model Reminder {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  timeDelta String   // e.g., "1d", "1w" before event date
+  type      ReminderType // CREATOR_SET or USER_SET
+  userId    String?  // null if set by creator for all attendees
+}
+
+enum ReminderType {
+  CREATOR_SET
+  USER_SET
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  userId      String
+  eventId     String
+  amount      Float
+  status      String   // "pending", "success", "failed"
+  reference   String   @unique
+  paystackRef String?
+  createdAt   DateTime @default(now())
+  ticketId    String?  // link to ticket after success
+}
+
+model EventAnalytics {
+  id            String   @id @default(uuid())
+  eventId       String   @unique
+  event         Event    @relation(fields: [eventId], references: [id])
+  totalTicketsBought Int
+  totalAttendees     Int  // scanned tickets
+  lastUpdated  DateTime @updatedAt
+}

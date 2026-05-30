@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output (if you compile TypeScript to JS)
+dist/
+build/
+
+# Environment variables (contains database password, JWT secret, etc.)
+.env
+.env.local
+.env.*.local
+
+# Prisma generated client (if you used a custom output folder)
+src/generated/
+
+# Prisma migrations – keep them, but ignore the dev.db if using SQLite
+# (you have PostgreSQL, so no dev.db)
+# prisma/migrations/ is typically committed, so don't ignore it
+
+# Logs
+logs/
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
