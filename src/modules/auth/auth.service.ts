@@ -44,7 +44,7 @@ export class AuthService {
       const accessToken = jwt.sign(
         { userId: decoded.userId, role: decoded.role },
         env.JWT_ACCESS_SECRET,
-        { expiresIn: env.JWT_ACCESS_EXPIRES_IN }
+        { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
       );
       return { accessToken };
     } catch (error) {
@@ -56,12 +56,12 @@ export class AuthService {
     const accessToken = jwt.sign(
       { userId, role },
       env.JWT_ACCESS_SECRET,
-      { expiresIn: env.JWT_ACCESS_EXPIRES_IN }
+      { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
     );
     const refreshToken = jwt.sign(
       { userId, role },
       env.JWT_REFRESH_SECRET,
-      { expiresIn: env.JWT_REFRESH_EXPIRES_IN }
+      { expiresIn: env.JWT_REFRESH_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
     );
     return { accessToken, refreshToken };
   }
