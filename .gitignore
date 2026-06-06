@@ -16,6 +16,7 @@ src/generated/
 # Prisma migrations – keep them, but ignore the dev.db if using SQLite
 # (you have PostgreSQL, so no dev.db)
 # prisma/migrations/ is typically committed, so don't ignore it
+prisma/prisma/test.db
 
 # Logs
 logs/

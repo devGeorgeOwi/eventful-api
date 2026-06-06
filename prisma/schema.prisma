@@ -77,11 +77,10 @@ model Payment {
   userId      String
   eventId     String
   amount      Float
-  status      String   // "pending", "success", "failed"
+  status      String   @default("pending") // "pending", "success", "failed"
   reference   String   @unique
   paystackRef String?
   createdAt   DateTime @default(now())
-  ticketId    String?  // link to ticket after success
 }
 
 model EventAnalytics {

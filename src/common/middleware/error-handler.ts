@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../errors/app-error';
+import { ZodError } from 'zod';
 
 export const errorHandler = (
   err: Error,
@@ -14,9 +15,13 @@ export const errorHandler = (
     });
   }
 
-  console.error('Unexpected error:', err);
-  res.status(500).json({
-    status: 'error',
-    message: 'Internal server error',
-  });
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Validation error',
+      details: err.errors,
+    });
+  }
+
+
 };
