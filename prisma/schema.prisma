@@ -22,6 +22,9 @@ model User {
 
   createdEvents Event[]  @relation("EventCreator")
   tickets       Ticket[]
+
+  reminders     Reminder[]
+  notificationLogs  NotificationLog[]
 }
 
 enum Role {
@@ -43,6 +46,7 @@ model Event {
   
   tickets           Ticket[]
   reminders         Reminder[]
+  notificationLogs  NotificationLog[]
   analyticsSnapshot EventAnalytics? // store precomputed numbers for speed
 }
 
@@ -62,9 +66,22 @@ model Reminder {
   id        String   @id @default(uuid())
   eventId   String
   event     Event    @relation(fields: [eventId], references: [id])
+  userId    String?  // null for global (creator) reminders
+  user      User?    @relation(fields: [userId], references: [id])
   timeDelta String   // e.g., "1d", "1w" before event date
-  type      ReminderType // CREATOR_SET or USER_SET
-  userId    String?  // null if set by creator for all attendees
+  type      String   // CREATOR_SET or USER_SET
+
+  @@unique([eventId, userId, type])   // prevents duplicates
+}
+
+model NotificationLog {
+  id      String    @id @default(uuid())
+  userId  String
+  user    User      @relation(fields: [userId], references: [id])
+  eventId String
+  event   Event     @relation(fields: [eventId], references:  [id])
+  message String
+  sentAt  DateTime  @default(now())
 }
 
 enum ReminderType {
