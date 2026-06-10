@@ -6,30 +6,23 @@ import { BadRequestError, UnauthorizedError } from '../../common/errors/app-erro
 
 export class AuthService {
   async register(email: string, password: string, role: string) {
-    // Check if user exists
     const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      throw new BadRequestError('Email already registered');
-    }
+    if (existing) throw new BadRequestError('Email already registered');
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: { email, passwordHash, role: role as any },
     });
 
-    return this.generateTokens(user.id, role);
+    return this.generateTokens(user.id, user.role);
   }
 
   async login(email: string, password: string) {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      throw new UnauthorizedError('Invalid credentials');
-    }
+    if (!user) throw new UnauthorizedError('Invalid credentials');
 
-    const isValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isValid) {
-      throw new UnauthorizedError('Invalid credentials');
-    }
+    const isValid = await bcrypt.compare(password, user.passwordHash!);
+    if (!isValid) throw new UnauthorizedError('Invalid credentials');
 
     return this.generateTokens(user.id, user.role);
   }
@@ -40,11 +33,10 @@ export class AuthService {
         userId: string;
         role: string;
       };
-      // You could also check a token version in Redis here for logout functionality
       const accessToken = jwt.sign(
         { userId: decoded.userId, role: decoded.role },
         env.JWT_ACCESS_SECRET,
-        { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
+        { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions
       );
       return { accessToken };
     } catch (error) {
@@ -52,16 +44,16 @@ export class AuthService {
     }
   }
 
-  private generateTokens(userId: string, role: string) {
+  public generateTokens(userId: string, role: string) {
     const accessToken = jwt.sign(
       { userId, role },
       env.JWT_ACCESS_SECRET,
-      { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
+      { expiresIn: env.JWT_ACCESS_EXPIRES_IN } as jwt.SignOptions
     );
     const refreshToken = jwt.sign(
       { userId, role },
       env.JWT_REFRESH_SECRET,
-      { expiresIn: env.JWT_REFRESH_EXPIRES_IN } as jwt.SignOptions // applied as jwt.SignOptions to fix type error
+      { expiresIn: env.JWT_REFRESH_EXPIRES_IN } as jwt.SignOptions
     );
     return { accessToken, refreshToken };
   }

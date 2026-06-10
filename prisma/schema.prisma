@@ -16,7 +16,8 @@ datasource db {
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
-  passwordHash  String
+  passwordHash  String?
+  googleId      String?  @unique
   role          Role     @default(USER)  // USER or CREATOR
   createdAt     DateTime @default(now())
 
@@ -68,8 +69,9 @@ model Reminder {
   event     Event    @relation(fields: [eventId], references: [id])
   userId    String?  // null for global (creator) reminders
   user      User?    @relation(fields: [userId], references: [id])
-  timeDelta String   // e.g., "1d", "1w" before event date
+  delta     String   // e.g., "1d", "1w" before event date
   type      String   // CREATOR_SET or USER_SET
+  createdAt DateTime  @default(now())
 
   @@unique([eventId, userId, type])   // prevents duplicates
 }

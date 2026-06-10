@@ -1,0 +1,464 @@
+{
+  "info": {
+    "name": "Eventful API",
+    "description": "Complete collection for the Eventful ticketing platform capstone project. Includes authentication, events, tickets, notifications, and analytics endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Creator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@test.com\",\n  \"password\": \"password123\",\n  \"role\": \"CREATOR\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user with CREATOR role. Returns access and refresh tokens."
+          },
+          "response": [
+            {
+              "name": "Success 201",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIs...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIs...\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register Attendee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"attendee@test.com\",\n  \"password\": \"password123\",\n  \"role\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user with USER (attendee) role."
+          },
+          "response": [
+            {
+              "name": "Success 201",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIs...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIs...\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"creator@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with existing credentials. Returns new access and refresh tokens."
+          },
+          "response": [
+            {
+              "name": "Success 200",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIs...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIs...\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Obtain a new access token using a refresh token."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Jazz Night\",\n  \"description\": \"An evening of smooth jazz\",\n  \"date\": \"2026-08-15T19:00:00.000Z\",\n  \"location\": \"Lagos\",\n  \"price\": 5000,\n  \"capacity\": 100\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": ["{{base_url}}"],
+              "path": ["events"]
+            },
+            "description": "Create a new event. Requires CREATOR role. Price is in kobo (smallest currency unit)."
+          },
+          "response": [
+            {
+              "name": "Created 201",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"id\": \"88b066a4-...\",\n    \"title\": \"Jazz Night\",\n    ...\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Events",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": ["{{base_url}}"],
+              "path": ["events"]
+            },
+            "description": "Get a paginated list of upcoming events. Public endpoint."
+          }
+        },
+        {
+          "name": "Get Event",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            },
+            "description": "Get a single event by ID."
+          }
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            },
+            "description": "Update an event. Only the creator can update."
+          }
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            },
+            "description": "Delete an event. Only the creator can delete."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Purchase Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"{{event_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/purchase",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "purchase"]
+            },
+            "description": "Initiate ticket purchase. Returns Paystack authorization URL. Use test card: 4084084084084081, any future expiry, CVV 408."
+          },
+          "response": [
+            {
+              "name": "Success 200",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"reference\": \"EVT-123...\",\n    \"authorization_url\": \"https://checkout.paystack.com/...\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Verify Payment & Get Ticket",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tickets/verify-payment?reference={{reference}}",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "verify-payment"],
+              "query": [
+                {
+                  "key": "reference",
+                  "value": "{{reference}}"
+                }
+              ]
+            },
+            "description": "Verify Paystack payment and create the ticket with QR code. Use the reference from the purchase response."
+          }
+        },
+        {
+          "name": "Scan QR Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"qrCodeText\": \"{{qr_code}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/scan",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "scan"]
+            },
+            "description": "Verify a QR code at the event entrance. Requires creator token."
+          }
+        },
+        {
+          "name": "My Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/mine",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "mine"]
+            },
+            "description": "Get all tickets belonging to the authenticated user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Set Event Reminder (Creator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delta\": \"1d\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/events/{{event_id}}/reminders",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "events", "{{event_id}}", "reminders"]
+            },
+            "description": "Set a global reminder for an event (applies to all attendees). Delta format: 1d, 2h, 30m."
+          }
+        },
+        {
+          "name": "Set Personal Reminder (Attendee)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delta\": \"2h\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/events/{{event_id}}/reminders/mine",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "events", "{{event_id}}", "reminders", "mine"]
+            },
+            "description": "Set a personal reminder for an event. Delta format: 1d, 2h, 30m."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Event Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/analytics/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "events", "{{event_id}}"]
+            },
+            "description": "Get analytics for a specific event (tickets sold, attendees, revenue). Requires creator token."
+          }
+        },
+        {
+          "name": "Overall Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/analytics/overall",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "overall"]
+            },
+            "description": "Get overall analytics across all events created by the logged-in creator."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "event_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reference",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "qr_code",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -12,6 +12,9 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   PAYSTACK_SECRET_KEY: z.string().min(1),
   REDIS_URL: z.string().url().default('redis://localhost:6379'),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.string().url().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

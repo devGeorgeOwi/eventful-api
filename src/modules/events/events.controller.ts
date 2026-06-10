@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { eventsService } from './events.service';
 import { createEventSchema, updateEventSchema, eventQuerySchema } from './events.validation';
+import { cache } from '../../lib/cache';
 
 export class EventsController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const data = createEventSchema.parse(req.body);
             const event = await eventsService.create(req.user!.id, data);
+            cache.flushAll();
             res.status(201).json({ status: 'success', data: event });
         } catch (error) {
             next(error);
@@ -16,8 +18,15 @@ export class EventsController {
     async findAll(req: Request, res: Response, next: NextFunction) {
         try {
             const query = eventQuerySchema.parse(req.query);
+            const cacheKey = `events:${JSON.stringify(query)}`;
+            const cached = cache.get(cacheKey);
+            if (cached) {
+            return res.status(200).json(cached);
+            }
             const result = await eventsService.findAll(query);
-            res.status(200).json({ status: 'success', ...result });
+            const response = { status: 'success', ...result };
+            cache.set(cacheKey, response);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }
@@ -37,6 +46,7 @@ export class EventsController {
         try {
             const data = updateEventSchema.parse(req.body);
             const event = await eventsService.update(req.params.id as string, req.user!.id, data);
+            cache.flushAll();
             res.status(200).json({ status: 'success', data: event });
         } catch (error) {
             next(error);
@@ -46,6 +56,7 @@ export class EventsController {
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const result = await eventsService.delete(req.params.id as string, req.user!.id);
+            cache.flushAll();
             res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             next(error);
