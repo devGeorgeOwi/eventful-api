@@ -12,6 +12,8 @@ const app = express();
 // Use Express JSON middleware to parse JSON request bodies
 app.use(express.json());
 
+app.get('/', (req, res) => res.send('Eventful API is running. See /api for endpoints.'));
+
 // Routes
 // Stricter limiter on auth routes (apply after global, so it overrides)
 app.use('/api/auth', authLimiter, authRoutes);
