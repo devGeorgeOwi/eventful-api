@@ -170,7 +170,9 @@ To deploy your own instance:
 ## Project Structure
 
 ---
+```
 eventful-api/
+├── docs/swagger.json 
 ├── prisma/                # Schema & migrations
 ├── src/
 │   ├── config/            # Environment validation, Passport setup
@@ -192,6 +194,7 @@ eventful-api/
 ├── .env.example           # Environment variable template
 ├── README.md
 └── package.json
+```
 ---
 
 ## License
