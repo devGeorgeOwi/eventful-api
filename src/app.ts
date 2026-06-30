@@ -6,11 +6,19 @@ import { notificationsRoutes } from './modules/notifications/notifications.route
 import { analyticsRoutes } from './modules/analytics/analytics.routes';
 import { globalLimiter, authLimiter } from './common/middleware/rate-limiter';
 import { errorHandler } from './common/middleware/error-handler';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../docs/swagger.json';
 
 const app = express();
 
 // Use Express JSON middleware to parse JSON request bodies
 app.use(express.json());
+
+// Serve the Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Redirect root to Swagger UI
+app.get('/', (req, res) => res.redirect('/api-docs'));
 
 app.get('/', (req, res) => res.send('Eventful API is running. See /api for endpoints.'));
 
