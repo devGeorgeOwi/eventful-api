@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "description": "Backend API for the Eventful ticketing platform. Built with Node.js, TypeScript, Express, Prisma, and PostgreSQL.",
     "contact": {
-      "name": "Your Name",
-      "url": "https://github.com/your-username/eventful-api"
+      "name": "George Owoicho",
+      "url": "https://github.com/devGeorgeOwi/eventful-api"
     }
   },
   "servers": [
@@ -15,7 +15,7 @@
       "description": "Local development"
     },
     {
-      "url": "https://eventful-api.onrender.com/api",
+      "url": "https://eventful-api-311y.onrender.com/api",
       "description": "Production (Render)"
     }
   ],
