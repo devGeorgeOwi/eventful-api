@@ -71,12 +71,11 @@ Backend service for **Eventful** – a ticketing platform that connects event cr
 
 ## API Documentation
 - Interactive Postman collection: [Link here once deployed]
-- Swagger UI (coming soon)
+- Swagger UI <https://eventful-api-311y.onrender.com/api-docs>
   
 ## Deployment
-The API is deployed on [Render / Railway] at:
-
-<https://eventful-api.onrender.com>
+The API is deployed on render at:
+<https://eventful-api-311y.onrender.com>
 
 ## Author
 - George Owoicho - www.linkedin.com/in/georgetechnmore
