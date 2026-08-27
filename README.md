@@ -22,7 +22,7 @@ Backend service for **Eventful** – a ticketing platform that connects event cr
 - **Payments:** Paystack
 - **Authentication:** JWT (access + refresh tokens)
 - **Testing:** Jest + Supertest
-- **Docs:** Postman / Swagger
+- **Docs:** Swagger
 
 ## Features
 
@@ -70,7 +70,6 @@ Backend service for **Eventful** – a ticketing platform that connects event cr
    ```
 
 ## API Documentation
-- Interactive Postman collection: [Link here once deployed]
 - Swagger UI <https://eventful-api-311y.onrender.com/api-docs>
   
 ## Deployment
